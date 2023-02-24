@@ -27,7 +27,7 @@ pred validStates {
   }
 
   all s: State, p: Pole | {
-    s.ringMap[(p.top[s])] = p
+    some p.top[s] implies {s.ringMap[(p.top[s])] = p}
   }
 }
 
@@ -91,4 +91,4 @@ run {
   validStates
   validRadii
   transitionStates
-} for exactly 3 Pole, exactly 3 Ring, 6 State for {next is linear}
+} for exactly 3 Pole, exactly 3 Ring,7 State for {next is linear}
