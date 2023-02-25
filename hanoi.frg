@@ -18,6 +18,7 @@ pred allRingsTogether[s:State] {
   all a,b : Ring | {
     s.ringMap[a] = s.ringMap[b]
   }
+
 }
 
 pred validStates {
@@ -28,6 +29,25 @@ pred validStates {
 
   all s: State, p: Pole | {
     some p.top[s] implies {s.ringMap[(p.top[s])] = p}
+  }
+
+  all s: State | {
+    all r: Ring | {
+      (no r.underMe[s]) implies {
+        all r2: Ring | {
+          (r2 != r) implies {
+            r2.radius < r.radius or s.ringMap[r] != s.ringMap[r2]
+          }
+          
+        }
+      }
+    }
+  }
+
+  all s: State | {
+    all disj a,b : Ring | {
+      some a.underMe[s] implies {a.underMe[s] != b.underMe[s]}
+    }
   }
 }
 
@@ -47,15 +67,27 @@ pred canTransition[s1:State, s2:State] {
     // s2.ringMap[r] is the "landing pole"
     s1.ringMap[r] != s2.ringMap[r]
 
+    // r was the top of leaving and is new top of landing
     (s1.ringMap[r]).top[s1] = r
     (s2.ringMap[r]).top[s2] = r
+
+    // r is now on top of the old landing top
     r.underMe[s2] = (s2.ringMap[r]).top[s1]
 
+    // second to top of leaving pole is new top
     ((s1.ringMap[r]).top[s1]).underMe[s1] = (s1.ringMap[r]).top[s2]
 
+    // no other ring moves
     all a: Ring | (a != r) implies {
       s1.ringMap[a] = s2.ringMap[a]
       a.underMe[s1] = a.underMe[s2]
+    }
+
+    // no other pole changes top
+    all p: Pole | {
+      (p != s1.ringMap[r] and p != s2.ringMap[r]) implies {
+        p.top[s1] = p.top[s2]
+      }
     }
   }
 }
@@ -91,4 +123,4 @@ run {
   validStates
   validRadii
   transitionStates
-} for exactly 3 Pole, exactly 3 Ring,7 State for {next is linear}
+} for exactly 3 Pole, exactly 3 Ring,10 State for {next is linear}
