@@ -23,16 +23,21 @@ pred allRingsTogether[s:State] {
 
 pred validStates {
   all s: State, r: Ring | {
+    // if a ring has an underMe, the radii are valid
     some r.underMe[s] implies (r.underMe[s]).radius > r.radius
+
+    //all rings are in every state
     some s.ringMap[r]
   }
 
   all s: State, p: Pole | {
+    //a pole's top must be a ring on that pole
     some p.top[s] implies {s.ringMap[(p.top[s])] = p}
   }
 
   all s: State | {
     all r: Ring | {
+      // if a ring has no underMe, then it must be the largest ring on its pole
       (no r.underMe[s]) implies {
         all r2: Ring | {
           (r2 != r) implies {
@@ -46,6 +51,7 @@ pred validStates {
 
   all s: State | {
     all disj a,b : Ring | {
+      // no rings can have the same ring under them
       some a.underMe[s] implies {a.underMe[s] != b.underMe[s]}
     }
   }
