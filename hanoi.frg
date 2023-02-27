@@ -58,13 +58,24 @@ pred validStates {
 }
 
 pred validRadii {
-  all disj a, b: Ring | {
-    a.radius != b.radius
+  one r: Ring | {
+    r.radius = 1
   }
 
   all a: Ring | {
-    a.radius > 0
+    (a.radius != 1) implies {
+      one b: Ring | {
+        a.radius = add[b.radius, 1]
+      }
+    }
   }
+  // all disj a, b: Ring | {
+  //   a.radius != b.radius
+  // }
+
+  // all a: Ring | {
+  //   a.radius > 0
+  // }
 }
 
 pred canTransition[s1:State, s2:State] {
