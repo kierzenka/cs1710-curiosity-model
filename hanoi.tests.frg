@@ -267,3 +267,18 @@ test suite for validRadii {
     radius = `Ring0 -> -4 + `Ring1 -> -3 + `Ring2 -> -2 + `Ring3 -> -1 + `Ring4 -> 0
   }
 }
+
+// vacuity test
+test expect {
+    tracesExist: {validStates and transitionStates} is sat
+}
+
+// shortest possible sln for 3 rings (7 moves, 8 states bc initial state)
+test expect {
+  optimalSln: {validStates and validRadii and transitionStates} for exactly 3 Pole, exactly 3 Ring,8 State for {next is linear} is sat
+}
+
+// cannot solve w/ <7 moves
+test expect {
+  impossibleSln: {validStates and validRadii and transitionStates} for exactly 3 Pole, exactly 3 Ring,7 State for {next is linear} is unsat
+}

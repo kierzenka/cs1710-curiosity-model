@@ -1,7 +1,7 @@
 const stage = new Stage();
 
 const randomColor = () => {
-    return Math.floor(Math.random()*16777215).toString(16);
+    return Math.floor(Math.random() * 16777215).toString(16);
 }
 
 const states = instance.signature('State').atoms();
@@ -14,7 +14,7 @@ for (let i = 0; i < rings.length; i++) {
 }
 
 const stateHeight = 180;
-const startingPosition = {x: 100, y: 100};
+const startingPosition = { x: 100, y: 100 };
 const poleBaseWidth = 160;
 const poleBaseHeight = 10;
 const poleWidth = 10;
@@ -34,20 +34,20 @@ for (let stateNum = 0; stateNum < states.length; stateNum++) {
         const poleTop = startingPosition.y + stateNum * stateHeight;
 
         // pole
-        stage.add(new Rectangle(poleHeight, poleWidth, {x: poleBaseLeft + poleBaseWidth / 2 - poleWidth / 2, y: poleTop}, 'black'));
+        stage.add(new Rectangle(poleHeight, poleWidth, { x: poleBaseLeft + poleBaseWidth / 2 - poleWidth / 2, y: poleTop }, 'black'));
 
         // pole base
-        stage.add(new Rectangle(poleBaseHeight, poleBaseWidth, {x: poleBaseLeft, y: poleTop + poleHeight}, 'black'))
+        stage.add(new Rectangle(poleBaseHeight, poleBaseWidth, { x: poleBaseLeft, y: poleTop + poleHeight }, 'black'))
 
         // if pole has a ring, get all rings by iterating through field 'underMe' until no rings left
         // todo: get all rings on the pole and stick em in this array
         const currPole = instance.signature('Pole').atom(`Pole${poleNum}`)
-        const topRing = currPole.join(currState.join(top))
+        const topRing = currState.join(currPole.join(top))
 
-        stage.add(new TextBox(topRing, {x:100, y:100},'black',16));
+        stage.add(new TextBox(topRing, { x: 100, y: 100 }, 'black', 16));
 
         const ringsOnThisPole = [];
-        
+
         for (let ringIdx = ringsOnThisPole.length; ringIdx >= 0; ringIdx--) {
             // todo: finalize visualization when able to get rings
             // increase height with each subsequent ring
