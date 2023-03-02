@@ -35,6 +35,11 @@ pred validStates {
     some p.top[s] implies {s.ringMap[(p.top[s])] = p}
   }
 
+  all s: State, p: Pole | {
+    // if a pole  has a ring, it must have  a top
+    (some r:Ring | s.ringMap[r] = p) implies {some p.top[s]}
+  }
+
   all s: State | {
     all r: Ring | {
       // if a ring has no underMe, then it must be the largest ring on its pole
@@ -69,13 +74,6 @@ pred validRadii {
       }
     }
   }
-  // all disj a, b: Ring | {
-  //   a.radius != b.radius
-  // }
-
-  // all a: Ring | {
-  //   a.radius > 0
-  // }
 }
 
 pred canTransition[s1:State, s2:State] {

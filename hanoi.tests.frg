@@ -2,7 +2,102 @@
 
 open "hanoi.frg"
 
+
+test suite for validRadii {
+  example idealRadii is validRadii for {
+    Ring = `Ring0 + `Ring1 + `Ring2
+    radius = `Ring0 -> 1 + `Ring1 -> 2 + `Ring2 -> 3
+  }
+
+  example randomRadii is not validRadii for {
+    Ring = `Ring0 + `Ring1 + `Ring2
+    radius = `Ring0 -> 1 + `Ring1 -> 5 + `Ring2 -> 6 
+  }
+
+  example randomRadii2 is not validRadii for {
+    Ring = `Ring0 + `Ring1 + `Ring2
+    radius = `Ring0 -> 2 + `Ring1 -> 3 + `Ring2 -> 4
+  }
+}
+
 test suite for validStates {
+
+  example startingState is validStates for {
+    State = `State0
+    Ring = `Ring0 + `Ring1 + `Ring2
+    Pole = `Pole0 + `Pole1
+    no next
+    ringMap = `State0 -> (`Ring0 -> `Pole0 + `Ring1 -> `Pole0 + `Ring2 -> `Pole0 )
+    underMe = `Ring0 -> `State0 -> `Ring1 + `Ring1 -> `State0 -> `Ring2
+    top = `Pole0 -> `State0 -> `Ring0
+    radius = `Ring0 -> 1 + `Ring1 -> 2 + `Ring2 -> 3
+  }
+
+  example multiplePoles is validStates for {
+    State = `State0
+    Ring = `Ring0 + `Ring1 + `Ring2
+    Pole = `Pole0 + `Pole1
+    no next
+    ringMap = `State0 -> (`Ring0 -> `Pole0 + `Ring1 -> `Pole1 + `Ring2 -> `Pole0)
+    underMe = `Ring0 -> `State0 -> `Ring2
+    top = `Pole0 -> `State0 -> `Ring0 + `Pole1 -> `State0 -> `Ring1
+    radius = `Ring0 -> 1 + `Ring1 -> 2 + `Ring2 -> 3
+  }
+
+  example allSpreadOut is validStates for {
+    State = `State0
+    Ring = `Ring0 + `Ring1 + `Ring2
+    Pole = `Pole0 + `Pole1 + `Pole2
+    no next
+    ringMap = `State0 -> (`Ring0 -> `Pole0 + `Ring1 -> `Pole1 + `Ring2 -> `Pole2)
+    no underMe
+    top = `Pole0 -> `State0 -> `Ring0 + `Pole1 -> `State0 -> `Ring1 + `Pole2 -> `State0 -> `Ring2
+    radius = `Ring0 -> 1 + `Ring1 -> 2 + `Ring2 -> 3
+  }
+
+  example notAnUnderMeChain is not validStates for {
+    State = `State0
+    Ring = `Ring0 + `Ring1 + `Ring2
+    Pole = `Pole0 + `Pole1
+    no next
+    ringMap = `State0 -> (`Ring0 -> `Pole0 + `Ring1 -> `Pole0 + `Ring2 -> `Pole0 )
+    radius = `Ring0 -> 1 + `Ring1 -> 3 + `Ring2 -> 2
+    underMe = `Ring0 -> `State0 -> `Ring1
+    top = `Pole0 -> `State0 -> `Ring0
+  }
+
+  example randomRingTop is not validStates for {
+    State = `State0
+    Ring = `Ring0 + `Ring1 + `Ring2
+    Pole = `Pole0 + `Pole1
+    no next
+    ringMap = `State0 -> (`Ring0 -> `Pole0 + `Ring1 -> `Pole0 + `Ring2 -> `Pole0 )
+    radius = `Ring0 -> 1 + `Ring1 -> 3 + `Ring2 -> 2
+    underMe = `Ring0 -> `State0 -> `Ring1 + `Ring1 -> `State0 -> `Ring2
+    top = `Pole1 -> `State0 -> `Ring0 + `Pole0 -> `State0 -> `Ring0
+  }
+
+  example missingTopPoles is not validStates for {
+    State = `State0
+    Ring = `Ring0 + `Ring1 + `Ring2
+    Pole = `Pole0 + `Pole1
+    no next
+    ringMap = `State0 -> (`Ring0 -> `Pole0 + `Ring1 -> `Pole1 + `Ring2 -> `Pole0)
+    underMe = `Ring0 -> `State0 -> `Ring2
+    top = `Pole0 -> `State0 -> `Ring0
+    radius = `Ring0 -> 1 + `Ring1 -> 2 + `Ring2 -> 3
+  }
+
+  example looseRings is not validStates for {
+    State = `State0
+    Ring = `Ring0 + `Ring1 + `Ring2
+    Pole = `Pole0
+    no next
+    ringMap = `State0 -> (`Ring0 -> `Pole0 + `Ring1 -> `Pole0 )
+    radius = `Ring0 -> 1 + `Ring1 -> 3 + `Ring2 -> 2
+    underMe = `Ring0 -> `State0 -> `Ring1 + `Ring1 -> `State0 -> `Ring2
+  }
+
   example misorderedRings is not validStates for {
     State = `State0
     Ring = `Ring0 + `Ring1 + `Ring2
