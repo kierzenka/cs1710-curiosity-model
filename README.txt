@@ -15,9 +15,39 @@ Our goal was to model this game in forge to see if it could find an optimal
 solution for the 3 ring/pole version of the game.
 
 ////////////////////////////////
-Description of Sigs/Preds:
+Model Design Choices:
 ////////////////////////////////
 
+A difference between a physical Tower of Hanoi game and ours is the ordering
+of the poles. A real game has a concrete first and last pole, where the stack
+must start and end, respectively, but our model does not have this notion
+builtin. Instead, it is sufficient to have all of the rings start on some
+arbitrary pole, to later be moved to a distinct arbitrary pole. Since the pole
+numbers are consistent across model states, this is equivalent to the original
+game's setup. A beneficial aspect of our digital implementation is that we can
+arbitrarily change the number of rings, poles, and allowed total number of
+states. This is useful because we can verify our model's correctness by running
+it with the publicly-known minimum number of states for a given number of rings
+and poles. Moreover, for less-common combinations of rings and poles, we can
+easily increase the number of searchable states in the hopes of finding a
+solution. In the Sterling visualization, it is imperative to look at an instance
+by creating a "Time Projection" on the "State" signature. Then, you will see a
+network of rings and poles, along with the radius of the rings. We recommend
+setting the "radius" field as an attribute of rings, simplifying the
+visualization. Then, the "ringMap" field shows which pole a given ring is on,
+and following the "underMe" field shows the stack of rings on a given pole.
+Finally, the "top" field holds a reference to a pole's top ring. By clicking
+through the time projection, you should be able to see all transitions of valid
+moves and resultant states, starting with all rings on one pole, and ending with
+all rings on a different pole. We attempted to write a custom visualization, and
+made decent progress in being able to draw out the poles for each state, but
+were unable to access pfunc values inside of the visualization. Going forward, we
+would have a working visualization if we knew how to access a pole's "top" field
+in a given state, and similarly a ring's "underMe" field in a given state.
+
+////////////////////////////////
+Description of Sigs/Preds:
+////////////////////////////////
 
 We decided to represent poles (Pole) and rings (Ring) as their own sigs as they 
 all represent distinct objects in our game. Since our ultimate goal was to 

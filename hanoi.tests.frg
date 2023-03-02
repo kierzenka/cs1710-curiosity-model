@@ -2,26 +2,7 @@
 
 open "hanoi.frg"
 
-
-test suite for validRadii {
-  example idealRadii is validRadii for {
-    Ring = `Ring0 + `Ring1 + `Ring2
-    radius = `Ring0 -> 1 + `Ring1 -> 2 + `Ring2 -> 3
-  }
-
-  example randomRadii is not validRadii for {
-    Ring = `Ring0 + `Ring1 + `Ring2
-    radius = `Ring0 -> 1 + `Ring1 -> 5 + `Ring2 -> 6 
-  }
-
-  example randomRadii2 is not validRadii for {
-    Ring = `Ring0 + `Ring1 + `Ring2
-    radius = `Ring0 -> 2 + `Ring1 -> 3 + `Ring2 -> 4
-  }
-}
-
 test suite for validStates {
-
   example startingState is validStates for {
     State = `State0
     Ring = `Ring0 + `Ring1 + `Ring2
@@ -232,6 +213,21 @@ test suite for transitionStates {
 }
 
 test suite for validRadii {
+  example idealRadii is validRadii for {
+    Ring = `Ring0 + `Ring1 + `Ring2
+    radius = `Ring0 -> 1 + `Ring1 -> 2 + `Ring2 -> 3
+  }
+
+  example randomRadii is not validRadii for {
+    Ring = `Ring0 + `Ring1 + `Ring2
+    radius = `Ring0 -> 1 + `Ring1 -> 5 + `Ring2 -> 6 
+  }
+
+  example randomRadii2 is not validRadii for {
+    Ring = `Ring0 + `Ring1 + `Ring2
+    radius = `Ring0 -> 2 + `Ring1 -> 3 + `Ring2 -> 4
+  }
+
   example allValidRadii is validRadii for {
     Ring = `Ring0 + `Ring1 + `Ring2 + `Ring3 + `Ring4
     radius = `Ring0 -> 1 + `Ring1 -> 3 + `Ring2 -> 2 + `Ring3 -> 4 + `Ring4 -> 5
