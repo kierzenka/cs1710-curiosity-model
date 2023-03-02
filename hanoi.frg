@@ -1,19 +1,20 @@
 #lang forge/bsl
 
 sig Ring {
-  underMe: pfunc State -> Ring,
-  radius: one Int
+  underMe: pfunc State -> Ring, //link to ring directly below
+  radius: one Int               //radius of this ring
 }
 
 sig Pole {
-  top: pfunc State -> Ring
+  top: pfunc State -> Ring      //link to pole's top ring
 }
 
 sig State {
-  next: lone State,
-  ringMap: pfunc Ring -> Pole
+  next: lone State,             //next state in trace
+  ringMap: pfunc Ring -> Pole   //mapping of ring to pole
 }
 
+// Checks if all rings are on the same pole in given state
 pred allRingsTogether[s:State] {
   all a,b : Ring | {
     s.ringMap[a] = s.ringMap[b]
@@ -21,12 +22,13 @@ pred allRingsTogether[s:State] {
 
 }
 
+// Checks that all states obey the invariants of the game
 pred validStates {
   all s: State, r: Ring | {
     // if a ring has an underMe, the radii are valid
     some r.underMe[s] implies (r.underMe[s]).radius > r.radius
 
-    //all rings are in every state
+    //all rings are on some pole
     some s.ringMap[r]
   }
 
@@ -36,8 +38,19 @@ pred validStates {
   }
 
   all s: State, p: Pole | {
-    // if a pole  has a ring, it must have  a top
+    // if a pole has a ring, it must have a top
     (some r:Ring | s.ringMap[r] = p) implies {some p.top[s]}
+  }
+
+  all s: State, p: Pole | {
+    // if a pole has a top, it must be the smallest ring on that pole
+    some p.top[s] implies {
+      all r: Ring | {
+          (p.top[s] != r) implies {
+            (p.top[s]).radius < r.radius or s.ringMap[r] != s.ringMap[p.top[s]]
+          }
+        }
+    }
   }
 
   all s: State | {
@@ -62,6 +75,7 @@ pred validStates {
   }
 }
 
+//checks that all radii are unique and makes them consecutive starting w/ 1
 pred validRadii {
   one r: Ring | {
     r.radius = 1
@@ -76,6 +90,7 @@ pred validRadii {
   }
 }
 
+// checks that 2 states are separated by a valid move
 pred canTransition[s1:State, s2:State] {
   one r: Ring | {
     // s1.ringMap[r] is the "leaving pole"
@@ -107,6 +122,7 @@ pred canTransition[s1:State, s2:State] {
   }
 }
 
+// Checks for a valid trace
 pred transitionStates {
 	some init, final: State {
 		-- constraints on the initial state
@@ -134,8 +150,9 @@ pred transitionStates {
 	}
 }
 
+// run statement finds optimal solution for 3 ring/pole
 run {
   validStates
   validRadii
   transitionStates
-} for exactly 3 Pole, exactly 3 Ring,10 State for {next is linear}
+} for exactly 3 Pole, exactly 3 Ring,8 State for {next is linear}
