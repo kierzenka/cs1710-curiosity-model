@@ -111,7 +111,7 @@ pred canTransition[s1:State, s2:State] {
 
 pred transitionStates {
 	some init, final: State {
-		-- constrains on the initial state
+		-- constraints on the initial state
 		allRingsTogether[init]
 
 		-- constraints on the final state
